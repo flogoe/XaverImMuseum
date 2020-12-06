@@ -42,8 +42,8 @@ interface SecurityConfig {
 
                 exchanges
                         // Chase
-                        .pathMatchers(GET, "/chase/api").permitAll()
-                        .pathMatchers(GET, "/api/*").permitAll()
+                        .pathMatchers(GET, "/api/chase").permitAll()
+                        .pathMatchers(GET, "/api/chase/*").permitAll()
                         .pathMatchers(GET, "/*").permitAll()
                         .pathMatchers(GET, chasePath).permitAll()
                         .pathMatchers(GET, chasePathId).permitAll()

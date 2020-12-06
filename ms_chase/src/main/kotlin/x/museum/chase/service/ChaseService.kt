@@ -8,11 +8,14 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.data.mongodb.core.*
 import org.springframework.data.mongodb.core.ReactiveFluentMongoOperations
 import org.springframework.data.mongodb.core.oneAndAwait
+import org.springframework.data.mongodb.core.query.div
 import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.data.mongodb.core.query.where
 import org.springframework.stereotype.Service
 import x.museum.chase.config.dev.adminUser
 import x.museum.chase.entity.Chase
 import x.museum.chase.entity.ChaseId
+import x.museum.chase.entity.ChaseMetaData
 import java.time.LocalDateTime
 import javax.validation.ConstraintValidatorFactory
 import javax.validation.ValidatorFactory
@@ -56,16 +59,15 @@ class ChaseService(
      * This function is called when a user starts a chase.
      * The app fetches the whole chase at the start of a game.
      */
-//    suspend fun findById(id: ChaseId): Chase? {
-//        println("service findById")
-//        val chase = withTimeout(timeoutShort) {
-//            mongo.query<Chase>()
-//                    .matching(Chase::id isEqualTo id)
-//                    .awaitOneOrNull()
-//        }
-//        logger.debug { "findById: $chase" }
-//        return chase
-//    }
+    suspend fun findById(id: ChaseId): Chase? {
+        val chase = withTimeout(timeoutShort) {
+            mongo.query<Chase>()
+                    .matching(Chase::metaData / ChaseMetaData::id isEqualTo id)
+                    .awaitOneOrNull()
+        }
+        logger.debug { "findById: $chase" }
+        return chase
+    }
 
     /**
      * Return all chases from DB.

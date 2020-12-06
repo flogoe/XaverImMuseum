@@ -46,7 +46,7 @@ interface Router {
         accept(HAL_JSON).nest {
             // Chase
             GET(chasePath, chaseHandler::findAll)
-//            GET(chaseIdPath, chaseHandler::findById)
+            GET(chaseIdPath, chaseHandler::findById)
         }
 
 //        contentType(MediaType.APPLICATION_JSON).nest {
