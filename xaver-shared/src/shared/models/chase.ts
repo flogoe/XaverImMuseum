@@ -1,27 +1,26 @@
-import { deserialize, Serializable, JsonProperty } from 'typescript-json-serializer';
+import { deserialize, serialize, Serializable, JsonProperty } from 'typescript-json-serializer';
 
 import { Preview } from './preview';
 import { Narrative } from './narrative';
 import { Quest } from './quest';
-import { Solution } from './solution';
 import { GameElement } from './gameElement';
 
 @Serializable()
 export class ChaseMetaData {
-	@JsonProperty() id?: string;
-	@JsonProperty() version?: number;
-	@JsonProperty() title: string;
-	@JsonProperty() description: string;
-	@JsonProperty() preview: Preview;
-	@JsonProperty() author: string; //Author;
-	@JsonProperty() lastEdited: Date;
-	@JsonProperty() creationDate: Date;
-	@JsonProperty() comment?: string;
+  @JsonProperty() id?: string;
+  @JsonProperty() version?: number;
+  @JsonProperty() title: string;
+  @JsonProperty() description: string;
+  @JsonProperty() preview: Preview;
+  @JsonProperty() author: string; //Author;
+  @JsonProperty() lastEdited: Date;
+  @JsonProperty() creationDate: Date;
+  @JsonProperty() comment?: string;
 }
 
 @Serializable()
 export class ChaseList {
-  @JsonProperty({type: ChaseMetaData}) chases: Array<ChaseMetaData>;
+  @JsonProperty({ type: ChaseMetaData }) chases: Array<ChaseMetaData>;
 
   constructor() {
     this.chases = new Array<ChaseMetaData>();
@@ -30,57 +29,48 @@ export class ChaseList {
 
 @Serializable()
 export class Chase {
-	@JsonProperty() metaData: ChaseMetaData;
-	@JsonProperty({
-    names: ['_narratives', '_quests', '_solutions'],
+  @JsonProperty() metaData: ChaseMetaData;
+  @JsonProperty({
+    names: ['_narratives', '_quests'],
     isDictionary: true,
     onDeserialize: value => {
       console.log('deserialize gameElement');
       const gameElements = new Map<number, GameElement>();
       for (const v in value._narratives) {
         console.log('add ' + v + ' as narrative');
-        const narrative = deserialize<Narrative>(value._narratives[v], Narrative);
-        gameElements[v] = narrative;
+        gameElements.set(+v, deserialize<Narrative>(value._narratives[v], Narrative));
       }
       for (const v in value._quests) {
         console.log('add ' + v + ' as Quest');
-        gameElements[v] = deserialize<Quest>(value._quests[v], Quest);
+        gameElements.set(+v, deserialize<Quest>(value._quests[v], Quest));
       }
-      for (const v in value._solutions) {
-        console.log('add ' + v + ' as solution');
-        gameElements[v] = deserialize<Solution>(value._solutions[v], Solution);
-      }
+      console.log("number of GameElements: ", gameElements.size);
       return gameElements;
     },
     onSerialize: value => {
       console.log('serialize gameElement');
-      const narratives = new Map<number, Narrative>();
-      const quests = new Map<number, Narrative>();
-      const solutions = new Map<number, Narrative>();
-      for (const element in value) {
-        if (value[element].buttons) {
+      const narratives = new Object();
+      const quests = new Object();
+      for (const element of value.keys()) {
+        if (value.get(element) instanceof Narrative) {
           console.log('serialize narrative');
-          narratives[element] = value[element];
-        } else if (value[element].questType) {
+          narratives[element] = serialize(value.get(element));
+        } else if (value.get(element) instanceof Quest) {
           console.log('serialize quest');
-          quests[element] = value[element];
-        } else if (value[element].solutionType) {
-          console.log('serialize solution');
-          solutions[element] = value[element];
+          quests[element] = serialize(value.get(element));
         }
       }
       return {
         _narratives: narratives,
-        _quests: quests,
-        _solutions: solutions
+        _quests: quests
       };
     }
   }) gameElements: Map<number, GameElement>;
-	@JsonProperty() initialGameElement: number; // GameElementID
-	@JsonProperty() tags?: Array<string>;
+  @JsonProperty() initialGameElement: number; // GameElementID
+  @JsonProperty() tags?: Array<string>;
 
-	getElement(destination: number): GameElement {
-		return this.gameElements[destination];
-	}
+  getElement(destination: number): GameElement {
+    return this.gameElements.get(destination);
+  }
 
 }

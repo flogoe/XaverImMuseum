@@ -1,37 +1,43 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, Output} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as moment from 'moment';
 import {Subscription, TimeInterval} from 'rxjs';
-import { Router } from '@angular/router';
 
-import {QuestStatus} from '../../../core/services/gameEngine';
+import {QuestStatus} from '../../../core/services/game.service';
 import {Description} from '../../../shared/models/description';
 import {Quest, QuestType} from '../../../shared/models/quest';
 import {HelpComponent} from '../help/help.component';
 import {SubmitSolutionComponent} from '../submit-solution/submit-solution.component';
-
 import {TimeService} from './../../../core/services/time.service';
+import {ChaseStatus} from './../../../core/models/chase_status';
 
+enum SolutionStatus {
+  ValidAnswer, InvalidAnswer, WaitingForAnswer
+}
 
 @Component({
   selector: 'app-quest',
   templateUrl: './quest.component.html',
   styleUrls: ['./quest.component.scss']
 })
-export class QuestComponent implements OnInit {
+export class QuestComponent implements OnInit, OnDestroy {
   @Input() quest: Quest;
   @Input() questStatus: QuestStatus;
   @Output() selection: EventEmitter<number> = new EventEmitter();
-  validSolution: number|undefined = undefined;
+  @Output() chaseStatus: EventEmitter<ChaseStatus> = new EventEmitter();
+
+  solutionStatus = SolutionStatus.WaitingForAnswer;
+  solutionDestination: number|undefined = undefined;
   futureTimeEvent;
   remainingTime = {hours: 0, minutes: 0, seconds: 0};
 
   subscriptions = new Array<Subscription>();
   timeTicker;
-  timerSet = false;
-  constructor(public dialog: MatDialog, public timeService: TimeService, private sanitizer: DomSanitizer, private router: Router) {}
+  constructor(public dialog: MatDialog, public timeService: TimeService, private sanitizer: DomSanitizer) {
+    this.solutionStatus = SolutionStatus.WaitingForAnswer;
+  }
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -44,7 +50,6 @@ export class QuestComponent implements OnInit {
             this.remainingTime.hours = duration.hours();
             this.remainingTime.minutes = duration.minutes();
             this.remainingTime.seconds = duration.seconds();
-            this.timerSet = true;
             if (this.remainingTime.hours === 0
               && this.remainingTime.minutes === 0
               && this.remainingTime.seconds === 0) {
@@ -57,8 +62,8 @@ export class QuestComponent implements OnInit {
   }
 
   select(button: string): void {
-    if (this.validSolution !== undefined) {
-      this.selection.emit(this.validSolution);
+    if (this.solutionStatus === SolutionStatus.ValidAnswer && this.solutionDestination !== undefined) {
+      this.selection.emit(this.solutionDestination);
     } else {
       console.log('There is no valid solution!');
       // TODO
@@ -67,10 +72,11 @@ export class QuestComponent implements OnInit {
 
   loose(): void {
     // TODO display popup
-    setTimeout(() => { this.router.navigateByUrl('/finished'); }, 1500);
+    this.chaseStatus.emit(ChaseStatus.Failed);
   }
 
   submit(): void {
+    this.solutionStatus = SolutionStatus.WaitingForAnswer;
     const dialogRef = this.dialog.open(SubmitSolutionComponent, {
       data: {quest: this.quest},
     });
@@ -78,8 +84,13 @@ export class QuestComponent implements OnInit {
       console.log(`Submitted: ${result}`);
       const solution = this.quest.requirementCombination.getSolution(result);
       if (solution !== undefined) {
-        this.validSolution = solution.destination;
+        this.solutionDestination = solution.destination;
+        this.solutionStatus = SolutionStatus.ValidAnswer;
+        if (this.quest.requirementCombination.getPossibleDestinations().length === 1) {
+          this.selection.emit(this.solutionDestination);
+        }
       } else {
+        this.solutionStatus = SolutionStatus.InvalidAnswer;
         if (result.length > 0) {
           this.questStatus.remainingTries--;
           console.log('remaining tries: ' + this.questStatus.remainingTries);
@@ -103,8 +114,16 @@ export class QuestComponent implements OnInit {
     });
   }
 
+  hasHelp(): boolean {
+    return this.quest.help.length > 0;
+  }
+
   hasSolution(): boolean {
-    return this.validSolution !== undefined;
+    return this.solutionStatus === SolutionStatus.ValidAnswer;
+  }
+
+  invalidAnswerGiven(): boolean {
+    return this.solutionStatus === SolutionStatus.InvalidAnswer;
   }
 
   ngOnDestroy(): void {
