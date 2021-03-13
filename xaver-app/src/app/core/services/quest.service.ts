@@ -11,7 +11,7 @@ export class QuestService {
 
   readonly SERVER_ADR = 'https://localhost:';
   readonly SERVER_PORT = '8445';
-  readonly QUEST_IDENTIFIER = '/api/quest'
+  readonly QUEST_IDENTIFIER = '/api/chase'
   readonly SERVER_BASE_URI = this.SERVER_ADR + this.SERVER_PORT + this.QUEST_IDENTIFIER;
 
   // ============== ONLY FOR DEVELOPING =============
@@ -44,9 +44,9 @@ export class QuestService {
   }
 
   public getDefaultChase(): Observable<any> {
-    //console.log('call server at ' + this.SERVER_BASE_URI + "/10000000-0000-0000-0000-000000000000");
-    //return this.httpClient.get(this.SERVER_BASE_URI + "/10000000-0000-0000-0000-000000000000")
-    return this.httpClient.get('assets-shared/examples/chase.json')
+    console.log('call server at ' + this.SERVER_BASE_URI + "/10000000-0000-0000-0000-000000000000");
+    return this.httpClient.get(this.SERVER_BASE_URI + "/10000000-0000-0000-0000-000000000000")
+    // return this.httpClient.get('assets-shared/examples/chase.json')
       .pipe(
         map(chase => {
           return chase;

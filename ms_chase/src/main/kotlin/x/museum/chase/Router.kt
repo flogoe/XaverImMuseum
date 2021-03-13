@@ -19,19 +19,21 @@ package x.museum.chase
 
 import org.springframework.context.annotation.Bean
 import org.springframework.hateoas.MediaTypes.HAL_JSON
-import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.server.coRouter // webflux
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.reactive.function.server.coRouter
 import x.museum.chase.entity.Chase
-import x.museum.chase.entity.Quest
 import x.museum.chase.rest.ChaseHandler
+
 //import x.museum.chase.rest.QuestHandler
 
 /**
  * @author [Florian Göbel](mailto:alfiron.begoel@gmail.com)
  */
+@CrossOrigin(origins = ["http://localhost:4200"])
 interface Router {
 
     @Bean
+    @CrossOrigin(origins = ["http://localhost:4200"])
     fun router(
             chaseHandler: ChaseHandler
     ) = coRouter {
@@ -45,6 +47,7 @@ interface Router {
 
         accept(HAL_JSON).nest {
             // Chase
+
             GET(chasePath, chaseHandler::findAll)
             GET(chaseIdPath, chaseHandler::findById)
         }

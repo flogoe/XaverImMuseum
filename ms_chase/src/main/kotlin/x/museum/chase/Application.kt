@@ -56,9 +56,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
  * located on your classpath eg tomcat-embedded.jar. Whereas @ImportAutoConfiguration only runs the configuration
  * classes that you provided in the annotation.
  */
-@EnableHypermediaSupport(type = [HAL], stacks = [WEBFLUX])
-@EnableWebFluxSecurity
-@EnableMongoAuditing
+
 @SpringBootApplication(proxyBeanMethods = false)
 class Application
 
