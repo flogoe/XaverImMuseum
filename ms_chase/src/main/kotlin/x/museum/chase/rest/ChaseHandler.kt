@@ -73,25 +73,25 @@ class ChaseHandler(
      * @param request The incoming request
      * @return A server response with status code
      */
-//    suspend fun create(request: ServerRequest): ServerResponse {
-//
-//        val chase = try {
-//            request.awaitBody<Chase>()
-//        } catch (e: DecodingException) {
-//            return handleDecodingException(e)
-//        }
-//
-//        val newChase = try {
-//            service.create(chase)
-//        }catch (e: ConstraintViolationException) {
-//            return handleConstraintViolation(e)
-//        }
-//
-//        logger.trace { "Saved chase: $newChase" }
-//        val baseUri = getBaseUri(request.headers().asHttpHeaders(), request.uri())
-//        val location = URI("$baseUri/${newChase.id}")
-//        return created(location).buildAndAwait()
-//    }
+    suspend fun create(request: ServerRequest): ServerResponse {
+
+        val chase = try {
+            request.awaitBody<Chase>()
+        } catch (e: DecodingException) {
+            return handleDecodingException(e)
+        }
+
+        val newChase = try {
+            service.create(chase)
+        }catch (e: ConstraintViolationException) {
+            return handleConstraintViolation(e)
+        }
+
+        logger.trace { "Saved chase: $newChase" }
+        val baseUri = getBaseUri(request.headers().asHttpHeaders(), request.uri())
+        val location = URI("$baseUri/${newChase.id}")
+        return created(location).buildAndAwait()
+    }
 
     /*******************************************
      *                  READ

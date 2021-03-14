@@ -50,6 +50,7 @@ interface Router {
 
             GET(chasePath, chaseHandler::findAll)
             GET(chaseIdPath, chaseHandler::findById)
+            POST(chasePath, chaseHandler::create)
         }
 
 //        contentType(MediaType.APPLICATION_JSON).nest {

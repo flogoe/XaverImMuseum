@@ -17,6 +17,7 @@ import x.museum.chase.entity.Chase
 import x.museum.chase.entity.ChaseId
 import x.museum.chase.entity.ChaseMetaData
 import java.time.LocalDateTime
+import java.util.*
 import javax.validation.ConstraintValidatorFactory
 import javax.validation.ValidatorFactory
 import kotlin.reflect.full.isSubclassOf
@@ -37,18 +38,32 @@ class ChaseService(
      * Create a new chase.
      * This function is called from the CMS to create and store a new chase in the DB.
      */
-//    suspend fun create(chase: Chase): Chase {
-//
-//        val newChase = chase.copy(
-//                quests = emptyList(),
-//                creationDate = LocalDateTime.now(),
-//                lastEdited = LocalDateTime.now(),
-//                lastEditor = adminUser
-//        )
-//
-//        logger.trace { "Create new chase: $chase" }
-//        return withTimeout(timeoutShort) { mongo.insert<Chase>().oneAndAwait(newChase)}
-//    }
+    suspend fun create(chase: Chase): Chase {
+
+        val newMetaData = ChaseMetaData (
+                id = null,
+                version = null,
+                title = chase.metaData.title,
+                description = "",
+                preview = null,
+                author = "Testauthor",
+                creationDate = LocalDateTime.now(),
+                lastEdited = LocalDateTime.now(),
+                comment = null)
+
+
+        val newChase = Chase (
+                metaData = newMetaData,
+                initialGameElement = null,
+                tags = null,
+                narratives = null,
+                quests = null,
+                solutions = null
+                )
+
+        logger.trace { "Create new chase: $chase" }
+        return withTimeout(timeoutShort) { mongo.insert<Chase>().oneAndAwait(newChase)}
+    }
 
     /*******************************************
      *                  READ

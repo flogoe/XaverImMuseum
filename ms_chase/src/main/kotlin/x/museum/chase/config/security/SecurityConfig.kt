@@ -52,7 +52,7 @@ interface SecurityConfig {
                         .pathMatchers(GET, "/*").permitAll()
                         .pathMatchers(GET, chasePath).permitAll()
                         .pathMatchers(GET, chasePathId).permitAll()
-                        .pathMatchers(POST, chasePath).permitAll()
+                        .pathMatchers(POST, "/chase/api").permitAll()
                         .pathMatchers(PUT, chasePathId).permitAll()
 
                         .pathMatchers(DELETE).permitAll()
