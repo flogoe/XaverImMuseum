@@ -56,20 +56,40 @@ export class ChaseService {
       )
   }
 
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json'});
+  options = { headers: this.headers };
+
   public createChase(p_chase: Chase): Observable<any> {
+    console.log("create", this.SERVER_BASE_URI + 'chase')
     return this.httpClient.post(
-      this.SERVER_BASE_URI + '/chase', { "chase": { "metaData": serialize(p_chase.metaData, true) } })
+      this.SERVER_BASE_URI + 'chase', { chase: { metaData: serialize(p_chase.metaData, true) }, options: {headers: this.headers} })
       .pipe(
         map(chase => {
           console.log("Success");
           return chase;
         }),
         catchError(error => {
-          console.log("Failure");
+          console.log("Failure", error);
           return error;
         })
       )
   }
 
+  public getAllChasesDebug(): Observable<any> {
+    console.log("get", this.SERVER_BASE_URI + 'chase')
+    // return this.httpClient.get(this.SERVER_BASE_URI_LOCAL + 'chase-list.json')
+      return this.httpClient.get(this.SERVER_BASE_URI + 'chase')
+      .pipe(
+        map(chases => {
+          // console.log("chases: " + chases);
+          return chases;
+        }),
+        catchError(error => {
+          // console.log("error: " + JSON.stringify(error));
+          return error;
+        })
+      )
+  }
 
 }

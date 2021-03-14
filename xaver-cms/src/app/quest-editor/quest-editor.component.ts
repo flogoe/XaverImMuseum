@@ -7,6 +7,7 @@ import { Chase } from '../shared/models/chase';
 import { LogicType, SolutionTerm } from '../shared/models/solution_term';
 import { CombineLatestSubscriber } from 'rxjs/internal/observable/combineLatest';
 import { Description } from '../shared/models/description';
+import { ChaseService } from '../shared/services/chase.service';
 //import { MainEditorComponent } from '../components/main-editor/main-editor.component'
 
 @Component({
@@ -136,10 +137,6 @@ export class QuestEditorComponent implements OnInit {
     console.log("deleteSolutionCombination(" + index + ")");
 
     this.combinationMap.splice(index, 1);
-  }
-
-  updateSolutionItem(event, index){
-    this.solutionItems[index] = event.target.value;
   }
 
   addButton() {

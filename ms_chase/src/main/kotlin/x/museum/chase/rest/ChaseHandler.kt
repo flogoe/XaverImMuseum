@@ -89,7 +89,7 @@ class ChaseHandler(
 
         logger.trace { "Saved chase: $newChase" }
         val baseUri = getBaseUri(request.headers().asHttpHeaders(), request.uri())
-        val location = URI("$baseUri/${newChase.id}")
+        val location = URI("$baseUri/${newChase.metaData.id}")
         return created(location).buildAndAwait()
     }
 

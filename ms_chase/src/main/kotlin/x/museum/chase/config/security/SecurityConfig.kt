@@ -53,12 +53,24 @@ interface SecurityConfig {
                         .pathMatchers(GET, chasePath).permitAll()
                         .pathMatchers(GET, chasePathId).permitAll()
                         .pathMatchers(POST, "/chase/api").permitAll()
+                        .pathMatchers(POST, "/api/*").permitAll()
+                        .pathMatchers(POST, "/api/chase").permitAll()
+                        .pathMatchers(POST, "/*").permitAll()
+                        .pathMatchers(POST, "/**").permitAll()
+                        .pathMatchers(POST, chasePath).permitAll()
+                        .pathMatchers(POST, chasePathId).permitAll()
                         .pathMatchers(PUT, chasePathId).permitAll()
 
+                        .pathMatchers(OPTIONS, "/chase/api").permitAll()
+                        .pathMatchers(OPTIONS, "/api/*").permitAll()
+                        .pathMatchers(OPTIONS, "/api/chase").permitAll()
+                        .pathMatchers(OPTIONS, "/*").permitAll()
+                        .pathMatchers(OPTIONS, "/**").permitAll()
+                        .pathMatchers(OPTIONS, chasePath).permitAll()
                         .pathMatchers(DELETE).permitAll()
             }
             .cors{ CorsConfiguration() }
-            .httpBasic{}
+//            .httpBasic{}
             .formLogin{ form -> form.disable() }
             .headers { headers -> headers.contentSecurityPolicy("default-src 'self'") }
             // Cross-Site-Request-Forgery (TODO: Check if we need to enable it)
@@ -66,17 +78,17 @@ interface SecurityConfig {
             .build()
 
 
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource? {
-        print("--------------- cors settings by gflow ---------------------")
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
-        configuration.allowedMethods = listOf("GET", "POST")
-        configuration.exposedHeaders = listOf("Location,ETag,Access-Control-Allow-Origin,Access-Control-Allow-Headers")
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
-    }
+//    @Bean
+//    fun corsConfigurationSource(): CorsConfigurationSource? {
+//        print("--------------- cors settings by gflow ---------------------")
+//        val configuration = CorsConfiguration()
+//        configuration.allowedOrigins = listOf("*")
+//        configuration.allowedMethods = listOf("GET", "POST")
+//        configuration.exposedHeaders = listOf("Location,ETag,Access-Control-Allow-Origin,Access-Control-Allow-Headers")
+//        val source = UrlBasedCorsConfigurationSource()
+//        source.registerCorsConfiguration("/**", configuration)
+//        return source
+//    }
 
 
     companion object {

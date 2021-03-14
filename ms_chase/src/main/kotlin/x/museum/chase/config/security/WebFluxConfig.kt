@@ -15,7 +15,8 @@ interface WebFluxConfig {
         return object : WebFluxConfigurerComposite() {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**").allowedOrigins("*")
-                        .allowedMethods("*")
+                        .allowedMethods("GET",
+                                "POST", "PUT", "DELETE", "OPTIONS").allowedHeaders("*").exposedHeaders("Location,ETag,Access-Control-Allow-Origin,Access-Control-Allow-Headers").maxAge(3600)
             }
         }
     }
