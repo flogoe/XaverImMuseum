@@ -12,20 +12,20 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=Admin123
             - MONGO_INITDB_DATABASE=museumX
 
-    consul:
-        image: consul:latest
-        container_name: consul
-        ports:
-            - "8500:8500"
-    chase:
-        image: ms_chase:0.0.1
-        container_name: chase
-        ports:
-            - "8444:8444"
-        depends_on:
-            - mongo
-        environment:
-            - "SPRING_PROFILES_ACTIVE=dev"
+              #    consul:
+              #        image: consul:latest
+              #        container_name: consul
+              #        ports:
+              #            - "8500:8500"
+              #    chase:
+              #        image: ms_chase:0.0.1
+              #        container_name: chase
+              #        ports:
+              #            - "8444:8444"
+              #        depends_on:
+              #            - mongo
+              #        environment:
+              #            - "SPRING_PROFILES_ACTIVE=dev"
 
 networks:
     default:
