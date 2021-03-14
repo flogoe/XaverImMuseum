@@ -1,5 +1,5 @@
 ### Create a new quest
-POST https://{{host}}
+POST http://{{host}}
 Content-Type: application/json
 Authorization: {{basic-auth-admin}}
 ALPN: h2

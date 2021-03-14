@@ -25,10 +25,16 @@ import org.springframework.http.HttpMethod.OPTIONS
 import org.springframework.http.HttpMethod.PATCH
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.PUT
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import x.museum.chase.Router.Companion.apiPath
 import x.museum.chase.Router.Companion.authPath
+import java.util.*
+
 //import x.museum.chase.config.security.dev.quest
 
 interface SecurityConfig {
@@ -38,7 +44,6 @@ interface SecurityConfig {
             .authorizeExchange { exchanges ->
                 val chasePath = "/chase$apiPath"
                 val chasePathId = "$chasePath/*"
-
 
                 exchanges
                         // Chase
@@ -52,6 +57,7 @@ interface SecurityConfig {
 
                         .pathMatchers(DELETE).permitAll()
             }
+            .cors{ CorsConfiguration() }
             .httpBasic{}
             .formLogin{ form -> form.disable() }
             .headers { headers -> headers.contentSecurityPolicy("default-src 'self'") }
@@ -60,4 +66,20 @@ interface SecurityConfig {
             .build()
 
 
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource? {
+        print("--------------- cors settings by gflow ---------------------")
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("*")
+        configuration.allowedMethods = listOf("GET", "POST")
+        configuration.exposedHeaders = listOf("Location,ETag,Access-Control-Allow-Origin,Access-Control-Allow-Headers")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
+
+
+    companion object {
+
+    }
 }

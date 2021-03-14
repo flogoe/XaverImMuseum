@@ -37,6 +37,10 @@ data class Chase (
                 "$HEX_PATTERN{8}-$HEX_PATTERN{4}-$HEX_PATTERN{4}-" +
                         "$HEX_PATTERN{4}-$HEX_PATTERN{12}"
     }
+
+    fun getId(): ChaseId? {
+        return metaData.id
+    }
 }
 
 typealias ChaseId = UUID

@@ -92,32 +92,4 @@ interface DbPopulate {
 
     }
 
-    private suspend fun createCollectionAndSchemaForQuest(
-            mongo: ReactiveMongoOperations,
-            logger: KLogger
-    ): MongoCollection<Document> {
-
-        val questSchema = MongoJsonSchema.builder()
-                .required("title")
-                .properties(
-                        string("title"),
-                        `object`("description").properties(
-                                string("id"),
-                                int32("version"),
-                                string("title"),
-                                string("description"),
-                                string("author")
-                        ),
-                        `object`("requirement"),
-                        array("tags"),
-                        date("lastEdited"),
-                        `object`("lastEditor"),
-                        `object`("author"),
-                        date("creationDate")
-                ).build()
-
-        logger.info { "Created JSON Schema for Quest: ${questSchema.toDocument().toJson()}"}
-        return mongo.createCollection<Quest>(CollectionOptions.empty().schema(questSchema)).awaitFirst()
-
-    }
 }

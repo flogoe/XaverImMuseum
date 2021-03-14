@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration
 import x.museum.chase.Router
 import x.museum.chase.config.db.TransactionConfig
 import x.museum.chase.config.security.SecurityConfig
+import x.museum.chase.config.security.WebFluxConfig
 
 @Configuration(proxyBeanMethods = false)
-class AppConfig: Router, TransactionConfig, SecurityConfig
+class AppConfig: Router, TransactionConfig, SecurityConfig, WebFluxConfig

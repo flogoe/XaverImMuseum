@@ -6,6 +6,7 @@ import { XButton } from 'src/app/shared/models/xButton'
 import { Chase } from '../shared/models/chase';
 import { LogicType, SolutionTerm } from '../shared/models/solution_term';
 import { CombineLatestSubscriber } from 'rxjs/internal/observable/combineLatest';
+import { ChaseService } from "../services/chase.service";
 //import { MainEditorComponent } from '../components/main-editor/main-editor.component'
 
 @Component({
@@ -43,7 +44,7 @@ export class QuestEditorComponent implements OnInit {
   gameElementsMap: Map<number, string>;
   gameElementsList: string[];
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, private chaseService: ChaseService) { }
 
   ngOnInit(): void {
 
@@ -286,6 +287,17 @@ export class QuestEditorComponent implements OnInit {
   reset(): void {
     console.log("reset");
     this.gameElementToLocal();
+  }
+
+  updateSolutionItem(event, index){
+    console.log('value', event.target.value);
+    this.solutionItems[index] = event.target.value;
+  }
+
+  getSendTest(){
+    this.chaseService.getAllChases().subscribe(hm => {
+      console.log('hmmmm', hm);
+    })
   }
 
 }

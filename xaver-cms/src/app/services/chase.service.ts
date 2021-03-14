@@ -9,9 +9,13 @@ import { catchError, map } from 'rxjs/operators';
 export class ChaseService {
 
   // TODO: Replace SERVER_ADR
-  readonly SERVER_ADR = 'https://localhost:';
-  readonly SERVER_PORT = '8445';
-  readonly CHASE_IDENTIFIER = '/api/quest'
+  readonly SERVER_ADR = 'http://localhost:';
+  readonly SERVER_PORT = '8444';
+    readonly CHASE_IDENTIFIER = '/api/chase'
+
+  // readonly SERVER_PORT = '8080';
+  // readonly CHASE_IDENTIFIER = '/greeting?name=User'
+
   readonly SERVER_BASE_URI = this.SERVER_ADR + this.SERVER_PORT + this.CHASE_IDENTIFIER;
 
   // ============== ONLY FOR DEVELOPING =============
@@ -35,13 +39,16 @@ export class ChaseService {
     return this.httpClient.get(this.SERVER_BASE_URI)
       .pipe(
         map(chases => {
+          console.log('chases', chases);
           return chases;
         }),
         catchError(error => {
+          console.log('error', error);
           return error;
         })
       )
   }
+
 
   public login() {
     return this.httpClient.get(this.SERVER_BASE_URI)

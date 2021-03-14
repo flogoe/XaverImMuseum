@@ -97,23 +97,18 @@ class ChaseHandler(
      *                  READ
      *******************************************/
 
-//    suspend fun findById(request: ServerRequest): ServerResponse {
-//        println("Handler: findById")
-//        val idStr = request.pathVariable(idPathVar)
-//        val id = ChaseId.fromString(idStr)
-//
-//        // val username = getUsername(request)
-//
-//        // TODO: Implement security check with username
-//
-//        val chase = try {
-//            service.findById(id) ?: return notFound().buildAndAwait()
-//        } catch (e: AccessForbiddenException) {
-//            return status(FORBIDDEN).buildAndAwait()
-//        }
-//        logger.debug { "findById: $chase" }
-//        return toResponse(chase, request)
-//    }
+    suspend fun findById(request: ServerRequest): ServerResponse {
+        val idStr = request.pathVariable(idPathVar)
+        val id = ChaseId.fromString(idStr)
+
+        val chase = try {
+            service.findById(id) ?: return notFound().buildAndAwait()
+        } catch (e: AccessForbiddenException) {
+            return status(FORBIDDEN).buildAndAwait()
+        }
+        logger.debug { "findById: $chase" }
+        return toResponse(chase, request)
+    }
 
 
     /**
